@@ -1,0 +1,202 @@
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  View,
+  Text,
+  Image,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+
+const { width, height } = Dimensions.get("window");
+
+const data = [
+  {
+    id: "1",
+    title: "Welcome to my App",
+    subtitle:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    image: require("../../../assets/uploads/icons8-restaurant-menu-101.png"),
+  },
+  {
+    id: "2",
+    title: "Discover our features",
+    subtitle:
+      "Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.",
+    image: require("../../../assets/uploads/icons8-delivery-500.png"),
+  },
+  {
+    id: "3",
+    title: "Make your life easier",
+    subtitle:
+      "Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    image: require("../../../assets/uploads/noun_Binoculars_1107295.png"),
+  },
+  {
+    id: "4",
+    title: "Stay organized",
+    subtitle:
+      "Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+    image: require("../../../assets/uploads/noun_Calendar_2442157.png"),
+  },
+  {
+    id: "5",
+    title: "Get started",
+    subtitle:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    image: require("../../../assets/uploads/noun_mac_2076879.png"),
+  },
+];
+
+const IntroSlider = () => {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [touchPosition, setTouchPosition] = useState(null);
+  const handleNext = () => {
+    setCurrentIndex(currentIndex + 1);
+  };
+
+  const handlePrev = () => {
+    setCurrentIndex(currentIndex - 1);
+  };
+
+  const handleDone = () => {
+    // Handle done action
+  };
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.slider}>
+        {data.map((item, index) => (
+          <View
+            key={item.id}
+            style={[
+              styles.slide,
+              { transform: [{ translateX: (index - currentIndex) * width }] },
+            ]}
+            onTouchStart={(e) => setTouchPosition(e.nativeEvent.locationX)}
+            onTouchMove={(e) => {
+              if (touchPosition < e.nativeEvent.locationX) {
+                handleNext();
+              } else {
+                handlePrev();
+              }
+            }}
+            onTouchEnd={() => setTouchPosition(null)}
+          >
+            <Image source={item.image} style={styles.image} />
+            <View style={styles.textContainer}>
+              <Text style={styles.title}>{item.title}</Text>
+              <Text style={styles.subtitle}>{item.subtitle}</Text>
+            </View>
+          </View>
+        ))}
+      </View>
+      <View style={styles.pagination}>
+        {data.map((_, index) => (
+          <View
+            key={index}
+            style={[
+              styles.paginationDot,
+              currentIndex === index && styles.paginationDotActive,
+            ]}
+          />
+        ))}
+      </View>
+      <View style={styles.buttonContainer}>
+        {currentIndex > 0 && (
+          <TouchableOpacity style={styles.button} onPress={handlePrev}>
+            <Text style={styles.buttonText}>Prev</Text>
+          </TouchableOpacity>
+        )}
+        {currentIndex < data.length - 1 ? (
+          <TouchableOpacity style={styles.button} onPress={handleNext}>
+            <Text style={styles.buttonText}>Next</Text>
+          </TouchableOpacity>
+        ) : (
+          <TouchableOpacity style={styles.button} onPress={handleDone}>
+            <Text style={styles.buttonText}>Done</Text>
+          </TouchableOpacity>
+        )}
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#3EB489",
+  },
+  slider: {
+    flex: 1,
+    flexDirection: "row",
+    width: width * data.length,
+  },
+  slide: {
+    width,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  image: {
+    width: 250,
+    height: 250,
+    resizeMode: "contain",
+  },
+  textContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 40,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#fff",
+    marginBottom: 20,
+  },
+  subtitle: {
+    fontSize: 16,
+    textAlign: "center",
+    color: "#fff",
+    paddingHorizontal: 20,
+  },
+  pagination: {
+    position: "absolute",
+    bottom: 40,
+    left: 0,
+    right: 0,
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  paginationDot: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#fff",
+    marginHorizontal: 5,
+  },
+  paginationDotActive: {
+    backgroundColor: "#000",
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  button: {
+    backgroundColor: "#fff",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#000",
+  },
+});
+
+export default IntroSlider;
